@@ -1,2 +1,5 @@
-Aspect 1
-Aspect 2
+Cleanness
+Room Spaciousness
+Food Quality
+Internet Service
+Parking
