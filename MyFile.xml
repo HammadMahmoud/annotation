@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reviews >
+<review rid="1">
+<sentences>
+</sentences>
+</review>
+<review rid="2">
+<sentences>
+</sentences>
+</review>
+<review rid="3">
+<sentences>
+</sentences>
+</review>
+<review rid="4">
+<sentences>
+</sentences>
+</review>
+<review rid="5">
+<sentences>
+</sentences>
+</review>
+<review rid="6">
+<sentences>
+<sentence id="6:0">
+<text>
+it's very nice games I need more pictures :-) you can add bts</text>
+<opinions>
+<opinion target="very nice" category="Aspect 1" polarity="positive" from="5" to="14">
+</opinion>
+<opinion target="pictures" category="Aspect 2" polarity="negative" from="33" to="40">
+</opinion>
+</opinions>
+</sentence>
+</sentences>
+</review>
+</reviews>

@@ -1,0 +1,143 @@
+<html>
+    <head>
+        
+    </head>
+
+    <body>
+        <header style="background-color: cadetblue;">
+            <h1 style="text-align: center;">
+              Annotation Tool for Aspect-Based Sentiment Analysis
+            </h1>
+
+        </header>
+        <center>
+        <form action="pag1.html">
+            <input type="submit" value="Home" style="font-size: 16px;padding: 5px 8px"/>
+        </form>
+        <input id="aspect" type="text" style="font-size: 16px;padding: 5px 8px">
+        <input type="button"  value="Add aspect" onclick="add()" style="font-size: 16px;padding: 5px 8px">
+        <br>
+        <table id='table'>
+
+        </table>
+        <br>
+        
+        <input type="text" id="save" value="aspects.txt" placeholder="filename.txt" style="font-size: 16px;padding: 5px 8px">
+      
+        <button onclick="downloadFile()" style="font-size: 16px;padding: 5px 8px">Save Aspects to File</button> 
+        <output></output>
+        <!-- <ul>
+            <li>
+                <a href="http://www.html5rocks.com/en/tutorials/workers/basics/#toc-inlineworkers-bloburis" target="_blank"></a>
+            </li>
+        </ul> -->
+      </center>
+        <footer style="background-color: darkkhaki;">
+            <h6 style="text-align: center;">
+              For any technical problem, please contact Ahmad Suleiman at amsulaiman165@cit.just.edu.jo
+            </h6>
+        </footer>
+    </body>
+    <script>
+            var output = document.querySelector('output');
+            
+            const MIME_TYPE = 'text/plain';
+            var text="";
+            var cleanUp = function(a) {
+              a.textContent = 'Downloaded';
+              a.dataset.disabled = true;
+        
+              // Need a small delay for the revokeObjectURL to work properly.
+              setTimeout(function() {
+                window.URL.revokeObjectURL(a.href);
+              }, 1500);
+            };
+        
+            var downloadFile = function() {
+              window.URL = window.webkitURL || window.URL;
+              for(var i=0;i<aspects.length;i++)
+              {
+                
+                if(i==aspects.length-1&&aspects[i]!=undefined)
+                    text+=aspects[i];
+                else if(aspects[i]!=undefined)
+                    text+=aspects[i]+'\n';
+              }
+              var prevLink = output.querySelector('a');
+              if (prevLink) {
+                window.URL.revokeObjectURL(prevLink.href);
+                output.innerHTML = '';
+              }
+              //XMLDocument.toString
+              //var t=localStorage.getItem('xmlfile');
+              //console.log(t);
+              var bb = new Blob([text], {type: MIME_TYPE});
+              var a = document.createElement('a');
+              a.download = document.getElementById("save").value;
+              a.href = window.URL.createObjectURL(bb);
+              a.textContent = 'Download ready';
+        
+              a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
+              output.appendChild(a);
+        
+              a.onclick = function(e) {
+                if ('disabled' in this.dataset) {
+                  return false;
+                }
+        
+                cleanUp(this);
+              };
+            };
+            //-----------------------------------------
+            var aspects=new Array();
+            var row =new Array();
+            var td1=new Array();
+            var td2=new Array();
+            var button=new Array();
+            function add(){
+                var temp=document.getElementById('aspect').value;
+                if(aspects.find(function(aspect){return aspect==temp;})){
+                    alert('this aspect already there');
+                }
+                else if(temp.length==0)
+                {
+                    alert("you can't add empty aspect");
+                }
+                else{
+                    
+                    aspects[aspects.length]=temp;
+                    var t=document.getElementById('table');
+                    row[aspects.length-1]=document.createElement('tr');
+                    td1[aspects.length-1]=document.createElement('td');
+                    var tx=document.createTextNode(temp);
+                    td1[aspects.length-1].appendChild(tx);
+                    td1[aspects.length-1].style['font-size']='20px';
+                    td1[aspects.length-1].innerHHTML=temp;
+                    td2[aspects.length-1]=document.createElement('td');
+                    button[aspects.length-1]=document.createElement('input');
+                    button[aspects.length-1].type='button';
+                    button[aspects.length-1].style['font-size']='16px';
+                    button[aspects.length-1].style['width']='60px';
+                    button[aspects.length-1].style['height']='30px';
+                    button[aspects.length-1].value="delete";
+                    button[aspects.length-1].id=aspects.length-1;
+                    td2[aspects.length-1].appendChild(button[aspects.length-1]);
+                    row[aspects.length-1].appendChild(td1[aspects.length-1]);
+                    row[aspects.length-1].appendChild(td2[aspects.length-1]);
+                    document.getElementById('table').appendChild(row[aspects.length-1]);
+                    button[aspects.length-1].onclick=function(ev){
+                        row[ev.target.id].removeChild(td1[ev.target.id]);
+                        row[ev.target.id].removeChild(td2[ev.target.id]);
+                        delete aspects[ev.target.id];
+                        console.log(ev.target.id);
+                    }
+                }
+            }
+            document.getElementById("aspect").addEventListener('keypress', function (e) {
+                            var key = e.which || e.keyCode;
+                            if (key === 13) { // 13 is enter
+                              add();            
+                            }
+                    });            
+        </script>
+</html>

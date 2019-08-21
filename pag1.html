@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript">
+		function mm(){
+			var text=document.getElementById("aspect");
+			const reader=new FileReader();
+				reader.onload= function(){
+					//var lines = this.result.split('\n');
+					console.log(reader.result);
+					var lines=this.result.split('\n');
+					localStorage.setItem(0,lines.length);
+					for(var i=1;i<=lines.length;i++)
+					localStorage.setItem(i, lines[i-1]);
+					
+				  	
+				};
+					reader.readAsText(text.files[0]);
+					alert("the aspects have been loaded");
+            }
+	</script>
+</head>
+<body>
+	<header style="background-color: cadetblue;">
+		<h1 style="text-align: center;">
+			Annotation Tool for Aspect-Based Sentiment Analysis
+		</h1>
+
+	</header>
+	<center>
+	<form action="page2.html">
+		<input type="submit" value="Create New Aspects" style="font-size: 16px;padding: 5px 8px"/>
+    </form>
+		<br>
+		<input id="aspect" type="file" style="display:none;" onchange="mm()"/>
+    <input type="button" value="Load Aspects From File" onclick="document.getElementById('aspect').click();" style="font-size: 16px;padding: 5px 8px"/>
+		<br>
+		<br>
+    <form action="page3.html">
+    	<input type="submit" value="Load Comments to Annotate" style="font-size: 16px;padding: 5px 8px"/>
+		</form>
+	</center>
+	<br>
+	<footer style="background-color: darkkhaki;">
+		<h6 style="text-align: center;">
+		 For any technical problem, please contact Ahmad Suleiman at amsulaiman165@cit.just.edu.jo
+		</h6>
+	</footer>
+</body>

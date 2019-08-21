@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html >
+
+<head >
+	<title></title>
+	<script type="text/javascript">
+		
+		var neg = new Array();
+		var poss = new Array();
+		var del = new Array();
+		var li = new Array();
+		var remove =new Array();
+		var reviews = document.createElement("Reviews");
+		var sentences = new Array();
+		var Opinions={};
+		var lines;
+		var review = new Array();
+		var d=new Array();
+		var arrayObj =new Array();
+		var index=0;
+		var index2=0;
+		var comments=new Array();
+
+		function Aspect(txt)
+		{
+			this.txt=txt;
+		}
+		function Comment()
+		{
+			this.end=new Array();
+			this.beg=new Array();
+		}
+		function doesEx(from,to,rid,aspname,sBeg,sEnd,polarity){
+			this.to=to;
+			this.from=from;
+			this.rid=rid;
+			this.aspname=aspname;
+			this.sBeg=sBeg;
+			this.sEnd=sEnd;
+			this.polarity=polarity;
+		}
+
+		var t=localStorage.getItem(0);
+		var asp=new Array();
+		for(var i=1;i<=t;i++)
+		{
+			asp[i-1]=new Aspect(localStorage.getItem(i));
+			console.log(localStorage.getItem(i));
+		}
+		
+		
+		function addMenuItem(){			
+			for(var i=1;i<=t;i++){
+					var ul = document.getElementById("u");
+					li[i-1] = document.createElement("li");
+					poss[i-1]=document.createElement("button");
+					poss[i-1].id='+'+i;
+					poss[i-1].innerHTML='+'
+					poss[i-1].style['width']=20+'px';
+					poss[i-1].style['height']=20+'px';
+					
+					li[i-1].appendChild(poss[i-1])
+					neg[i-1]=document.createElement("button");
+					neg[i-1].id='-'+i;
+					neg[i-1].innerHTML='-';
+					neg[i-1].style['width']=20+'px';
+					neg[i-1].style['height']=20+'px';
+					
+					li[i-1].appendChild(neg[i-1])
+					del[i-1]=document.createElement('button');
+					del[i-1].id='d'+i;
+					del[i-1].innerHTML='del';
+					del[i-1].style['width']='25px';
+					del[i-1].style['height']='20px';
+
+					li[i-1].appendChild(del[i-1]);
+					li[i-1].setAttribute('id'+i,asp[i-1].txt);
+					li[i-1].appendChild(document.createTextNode(asp[i-1].txt));
+					li[i-1].style["height"]='1.5rem';
+					li[i-1].style["line-height"]='1.5rem';
+					li[i-1].style['font-size']='1rem';
+					li[i-1].style['font-weight']='100';
+					li[i-1].style['padding']='0 1rem';
+					li[i-1].style['cursor']='pointer';
+					li[i-1].style['color']='#000';
+					li[i-1].style['font-weight']='500';
+					ul.appendChild(li[i-1]);
+					del[i-1].onclick=function(ev)
+					{
+						var bid=ev.target.id+"";       // to get the button id
+						bid=bid.substring(1,bid.length);
+						//console.log('bid = '+bid);
+						var aname = li[bid-1].innerHTML+"";
+						var f=aname.lastIndexOf('>');
+						aname=aname.substring(f+1,aname.length); // the aspect name
+						var startSelection = window.getSelection().anchorOffset;// the first index of the selected text
+						var endSelection = window.getSelection().focusOffset;// the last index of the selected text
+						if(startSelection>endSelection)
+						[startSelection,endSelection]=[endSelection,startSelection];
+						var b=0,e=0;
+						//console.log(startSelection+":"+endSelection);
+						var i=0;
+						var tx="";
+						console.log(comments[index].end[0]);
+						for(i=0;i<comments[index].end.length;i++)
+						{
+							if(endSelection-1<=comments[index].end[i]&&startSelection>=comments[index].beg[i])
+							{
+								tx = arrayObj[index].text.substring(comments[index].beg[i],comments[index].end[i]+1);
+								b=comments[index].beg[i];
+								e=comments[index].end[i];
+								break;
+							}
+						}
+						if(d.find(function(x){return x.from==startSelection&&x.to==endSelection-1&&x.rid==index+1&&x.aspname==aname;})){
+								for(var h=0;h<review[index].children[0].children.length;h++)
+								{
+									for(var g=0;g<review[index].children[0].children[h].children[1].children.length;g++)
+									{
+										var w=review[index].children[0].children[h].children[1].children[g];
+										//console.log(w);
+										//console.log("hello2");
+										var dFrom=w.getAttribute('from');
+										var dTo=w.getAttribute("to");
+										var dAspname=w.getAttribute('category');
+										if(dFrom==startSelection&&dTo==endSelection-1&&dAspname==aname)
+										{
+											console.log(w);
+											review[index].children[0].children[h].children[1].removeChild(w);
+											for(var l=0;l<d.length;l++)
+											{
+												if(d[l].from==dFrom&&dTo==d[l].to&&d[l].rid==index+1&&d[l].aspname==dAspname)
+												{
+													console.log('d[l].from : '+d[l].from+' , dFrom : '+dFrom);
+													console.log('d[l].to : '+d[l].to+' , dTo : '+dTo);
+													console.log('d[l].aspname : '+d[l].aspname+' , dAspname : '+dAspname);
+													console.log( "index before = "+l);
+													d[l].aspname=undefined;d[l].from=undefined;d[l].to=undefined;
+													alert('opinion has been removed');
+													console.log('d[l].from : '+d[l].from+' , dFrom : '+dFrom);
+													console.log('d[l].to : '+d[l].to+' , dTo : '+dTo);
+													console.log('d[l].aspname : '+d[l].aspname+' , dAspname : '+dAspname);
+													console.log( "index after = "+l);
+													console.log(d.length);
+													return;
+												}
+											}
+										}
+									}
+								}
+							
+							console.log(review[index].children.length);
+						}
+					}
+					neg[i-1].onclick=function(ev){
+						var bid=ev.target.id+"";       // to get the button id
+						bid=bid.substring(1,bid.length);
+						//console.log('bid = '+bid);
+						var aname = li[bid-1].innerHTML+"";
+						var f=aname.lastIndexOf('>');
+						aname=aname.substring(f+1,aname.length); // the aspect name
+						var startSelection = window.getSelection().anchorOffset;// the first index of the selected text
+						var endSelection = window.getSelection().focusOffset;// the last index of the selected text
+						if(startSelection>endSelection)
+						[startSelection,endSelection]=[endSelection,startSelection];
+						var b=0,e=0;
+						//console.log(startSelection+":"+endSelection);
+						var i=0;
+						var tx="";
+						console.log(comments[index].end[0]);
+						console.log("end selection "+endSelection);
+						for(i=0;i<comments[index].end.length;i++)
+						{
+							if(endSelection-1<=comments[index].end[i]&&startSelection>=comments[index].beg[i])
+							{
+								tx = arrayObj[index].text.substring(comments[index].beg[i],comments[index].end[i]+1);
+								b=comments[index].beg[i];
+								e=comments[index].end[i];
+								break;
+							}
+						}
+						if(d.find(function(x){return x.from==startSelection&&x.to==endSelection-1&&x.rid==index+1&&x.aspname==aname;})){
+							alert("this review already exist");
+						}
+						else if(d.find(function(x){return x.sBeg==b&&x.sEnd==e&&x.rid==index+1;}))
+						{
+							var opinion = document.createElement('opinion');
+							var sub=document.getElementById("s1").innerHTML;
+							sub=sub.substring(startSelection,endSelection);
+							opinion.setAttribute('target',sub.trim());
+							opinion.setAttribute('category',aname);
+							opinion.setAttribute('polarity','negative');
+							opinion.setAttribute('from',startSelection);
+							opinion.setAttribute('to',endSelection-1);
+							console.log(Opinions);
+							Opinions[index+1+':'+startSelection+':'+endSelection-1].appendChild(opinion);
+							d[d.length]=new doesEx(startSelection,endSelection-1,index+1,aname,b,e,'neg');
+						}
+						else{
+							
+							var sentence = document.createElement('sentence');
+							sentence.setAttribute('id',index+1+':'+sentences[index].children.length);
+							var text=document.createElement('text');
+							var ll= document.createTextNode(tx);
+							
+							//document.getElementById('6').innerHTML=sub;
+							text.appendChild(ll);
+							console.log(text);
+							sentence.appendChild(text);
+							Opinions[index+1+':'+startSelection+':'+endSelection-1]=document.createElement('Opinions');
+							var opinion = document.createElement('opinion');
+							var sub=document.getElementById("s1").innerHTML;
+							sub=sub.substring(startSelection,endSelection);
+							opinion.setAttribute('target',sub.trim());
+							opinion.setAttribute('category',aname);
+							opinion.setAttribute('polarity','negative');
+							opinion.setAttribute('from',startSelection);
+							opinion.setAttribute('to',endSelection-1);
+							Opinions[index+1+':'+startSelection+':'+endSelection-1].appendChild(opinion);
+							console.log(Opinions[index+1+':'+sentences[index].children.length])
+							sentence.appendChild(Opinions[index+1+':'+startSelection+':'+endSelection-1]);
+							sentences[index].appendChild(sentence);
+							d[d.length]=new doesEx(startSelection,endSelection-1,index+1,aname,b,e,'neg');
+						}
+				};
+					poss[i-1].onclick=function(ev){
+						var bid=ev.target.id+"";       // to get the button id
+						bid=bid.substring(1,bid.length);
+						var aname = li[bid-1].innerHTML+"";
+						var f=aname.lastIndexOf('>');
+						aname=aname.substring(f+1,aname.length); // the aspect name
+						var startSelection = window.getSelection().anchorOffset;// the first index of the selected text
+						var endSelection = window.getSelection().focusOffset;// the last index of the selected text
+						if(startSelection>endSelection)
+						[startSelection,endSelection]=[endSelection,startSelection];
+						var b=0,e=0;
+						//console.log(startSelection+":"+endSelection);
+						var i=0;
+						var tx="";
+						console.log(comments[index].end[0]);
+						console.log("end selection "+endSelection);
+						for(i=0;i<comments[index].end.length;i++)
+						{
+							if(endSelection-1<=comments[index].end[i]&&startSelection>=comments[index].beg[i])
+							{
+								tx = arrayObj[index].text.substring(comments[index].beg[i],comments[index].end[i]+1);
+								b=comments[index].beg[i];
+								e=comments[index].end[i];
+								break;
+							}
+						}
+						if(d.find(function(x){return x.from==startSelection&&x.to==endSelection-1&&x.rid==index+1&&x.aspname==aname;})){
+							alert("this review already exist");
+							console.log(d);
+						}
+						else if(d.find(function(x){return x.sBeg==b&&x.sEnd==e&&x.rid==index+1;}))
+						{
+							var opinion = document.createElement('opinion');
+							var sub=document.getElementById("s1").innerHTML;
+							sub=sub.substring(startSelection,endSelection);
+							opinion.setAttribute('target',sub.trim());
+							opinion.setAttribute('category',aname);
+							opinion.setAttribute('polarity','positive');
+							opinion.setAttribute('from',startSelection);
+							opinion.setAttribute('to',endSelection-1);
+							console.log(Opinions);
+							Opinions[index+1+':'+startSelection+':'+endSelection-1].appendChild(opinion);
+							d[d.length]=new doesEx(startSelection,endSelection-1,index+1,aname,b,e,'poss');
+						}
+						else{
+							
+							var sentence = document.createElement('sentence');
+							sentence.setAttribute('id',index+1+':'+sentences[index].children.length);
+							var text=document.createElement('text');
+							var ll= document.createTextNode(tx);
+							text.appendChild(ll);
+							console.log(text);
+							sentence.appendChild(text);
+							Opinions[index+1+':'+startSelection+':'+endSelection-1]=document.createElement('Opinions');
+							var opinion = document.createElement('opinion');
+							var sub=document.getElementById("s1").innerHTML;
+							sub=sub.substring(startSelection,endSelection);
+							opinion.setAttribute('target',sub.trim());
+							opinion.setAttribute('category',aname);
+							opinion.setAttribute('polarity','positive');
+							opinion.setAttribute('from',startSelection);
+							opinion.setAttribute('to',endSelection-1);
+							Opinions[index+1+':'+startSelection+':'+endSelection-1].appendChild(opinion);
+							console.log(Opinions[index+1+':'+sentences[index].children.length])
+							sentence.appendChild(Opinions[index+1+':'+startSelection+':'+endSelection-1]);
+							sentences[index].appendChild(sentence);
+							d[d.length]=new doesEx(startSelection,endSelection-1,index+1,aname,b,e,'poss');
+						}
+				};
+			}
+        }
+		
+		function xx(){
+			var text=document.getElementById("fileInput");
+			const reader=new FileReader();
+				reader.onload= function(){
+					lines=this.result.split('\n');
+					console.log(lines[0]);
+					index=0;
+					arrayObj[index]=JSON.parse(lines[index]);
+					comments[index]=new Comment();
+					for(var i=0;i<arrayObj[index].text.length;i++)
+					{
+						if(arrayObj[index].text[i]=='.')
+						{
+							if(comments[index].end.length==0)
+							comments[index].beg[comments[index].beg.length]=0;
+							else comments[index].beg[comments[index].beg.length]=comments[index].end[comments[index].end.length-1]+1;
+							comments[index].end[comments[index].end.length]=i;								
+						}
+						else if(i==arrayObj[index].text.length-1)
+						{
+							console.log(i);
+							if(comments[index].end.length==0)
+							{comments[index].beg[comments[index].beg.length]=0;}
+							else {comments[index].beg[comments[index].beg.length]=comments[index].end[comments[index].end.length-1]+1;console.log("no its not"+comments[index].end.length);}
+							comments[index].end[comments[index].end.length]=i;
+						}
+					}
+					//document.getElementById("s1").innerHTML=comments[index].txt;
+					for(var z=0;z<lines.length;z++)
+					{
+						var opt=document.createElement('option');
+						opt.value=z;
+						opt.innerHTML=z+1;
+						document.getElementById('cNO').appendChild(opt);
+					}
+					document.getElementById('s1').innerHTML=arrayObj[index].text;
+					document.getElementById('c').innerHTML='Comment '+(index+1)+' of '+lines.length;
+					review[index] = document.createElement('Review');
+					review[index].setAttribute('rid',index+1);
+					reviews.appendChild(review[index]);
+					sentences[index] = document.createElement('Sentences');
+					Opinions[index] =document.createElement('Opinions');
+					review[index].appendChild(sentences[index]);
+					//review[index].appendChild(Opinions[index]);
+					addMenuItem();	
+				};
+				reader.readAsText(text.files[0]);
+				
+		}
+
+		function next(){
+
+			index++;
+			if(index<lines.length){
+				arrayObj[index]=JSON.parse(lines[index]);
+				comments[index]=new Comment();
+				for(var i=0;i<arrayObj[index].text.length;i++)
+				{
+					if(arrayObj[index].text[i]=='.')
+					{
+						if(comments[index].end.length==0)
+						comments[index].beg[comments[index].beg.length]=0;
+						else comments[index].beg[comments[index].beg.length]=comments[index].end[comments[index].end.length-1]+1;
+						comments[index].end[comments[index].end.length]=i;								
+					}
+					else if(i==arrayObj[index].text.length-1)
+					{
+						console.log(i);
+						if(comments[index].end.length==0)
+						{comments[index].beg[comments[index].beg.length]=0; console.log("zerooo");}
+						else {comments[index].beg[comments[index].beg.length]=comments[index].end[comments[index].end.length-1]+1;console.log("no its not"+comments[index].end.length);}
+						comments[index].end[comments[index].end.length]=i;
+					}
+				}
+				document.getElementById("s1").value="";
+				document.getElementById("s1").innerHTML=arrayObj[index].text; //put the value in div
+				document.getElementById('c').innerHTML='Comment '+(index+1)+' of '+lines.length;
+				document.getElementById("cNO").value=index;
+				console.log(review[index]);
+				if(review[index]==undefined){
+					review[index] = document.createElement('Review');
+					review[index].setAttribute('rid',index+1);
+					reviews.appendChild(review[index]);
+					sentences[index] = document.createElement('Sentences');
+					Opinions[index] =document.createElement('Opinions');
+					review[index].appendChild(sentences[index]);
+				}
+				//review[index].appendChild(Opinions[index]);
+			}
+			else {
+				alert("this is the last comment");
+				index--;
+			}
+		}
+
+		function previous()
+		{
+			index--;
+			if(index>=0){
+				arrayObj[index]=JSON.parse(lines[index]);
+				comments[index]=new Comment();
+				for(var i=0;i<arrayObj[index].text.length;i++)
+				{
+					if(arrayObj[index].text[i]=='.')
+					{
+						if(comments[index].end.length==0)
+						comments[index].beg[comments[index].beg.length]=0;
+						else comments[index].beg[comments[index].beg.length]=comments[index].end[comments[index].end.length-1]+1;
+						comments[index].end[comments[index].end.length]=i;								
+					}
+					else if(i==arrayObj[index].text.length-1)
+					{
+						console.log(i);
+						if(comments[index].end.length==0)
+						{comments[index].beg[comments[index].beg.length]=0; console.log("zerooo");}
+						else {comments[index].beg[comments[index].beg.length]=comments[index].end[comments[index].end.length-1]+1;
+						console.log("no its not"+comments[index].end.length);}
+						comments[index].end[comments[index].end.length]=i;
+					}
+				}
+				document.getElementById("s1").value="";
+				document.getElementById("s1").innerHTML=arrayObj[index].text; //put the value in div
+				document.getElementById('c').innerHTML='Comment '+(index+1)+' of '+lines.length;
+				document.getElementById("cNO").value=index;
+				console.log(review[index]);
+				if(review[index]==undefined){
+					review[index] = document.createElement('Review');
+					review[index].setAttribute('rid',index+1);
+					reviews.appendChild(review[index]);
+					sentences[index] = document.createElement('Sentences');
+					Opinions[index] =document.createElement('Opinions');
+					review[index].appendChild(sentences[index]);
+				}
+			}
+			else{
+				alert("this is the first comment");
+				index++;
+			}
+		}
+		function Go()
+		{
+			var e=document.getElementById("cNO").value;
+			index=parseInt(e,10);
+			arrayObj[index]=JSON.parse(lines[index]);
+				comments[index]=new Comment();
+				for(var i=0;i<arrayObj[index].text.length;i++)
+				{
+					if(arrayObj[index].text[i]=='.')
+					{
+						if(comments[index].end.length==0)
+						comments[index].beg[comments[index].beg.length]=0;
+						else comments[index].beg[comments[index].beg.length]=comments[index].end[comments[index].end.length-1]+1;
+						comments[index].end[comments[index].end.length]=i;								
+					}
+					else if(i==arrayObj[index].text.length-1)
+					{
+						console.log(i);
+						if(comments[index].end.length==0)
+						{comments[index].beg[comments[index].beg.length]=0; console.log("zerooo");}
+						else {comments[index].beg[comments[index].beg.length]=comments[index].end[comments[index].end.length-1]+1;console.log("no its not"+comments[index].end.length);}
+						comments[index].end[comments[index].end.length]=i;
+					}
+				}
+				document.getElementById("s1").value="";
+				document.getElementById("s1").innerHTML=arrayObj[index].text; //put the value in div
+				document.getElementById('c').innerHTML='Comment '+(index+1)+' of '+lines.length;
+				console.log(review[index]);
+				if(review[index]==undefined){
+					review[index] = document.createElement('Review');
+					review[index].setAttribute('rid',index+1);
+					reviews.appendChild(review[index]);
+					sentences[index] = document.createElement('Sentences');
+					Opinions[index] =document.createElement('Opinions');
+					review[index].appendChild(sentences[index]);
+				}
+		}
+	    let menu = null;
+        document.addEventListener('DOMContentLoaded', function(){
+            //make sure the right click menu is hidden
+            menu = document.querySelector('.menu');
+            menu.classList.add('off');
+            
+            //add the right click listener to the box
+            let box = document.getElementById('s1');
+            box.addEventListener('contextmenu', showmenu);
+            
+            //add a listener for leaving the menu and hiding it
+            menu.addEventListener('mouseleave', hidemenu);
+        });
+        
+        function showmenu(ev){
+            //stop the real right click menu
+            ev.preventDefault(); 
+            //show the custom menu
+            console.log( ev.clientX, ev.clientY );
+            menu.style.top = `${ev.clientY - 20}px`;
+            menu.style.left = `${ev.clientX - 20}px`;
+            menu.classList.remove('off');
+        }
+        
+        function hidemenu(ev){
+            menu.classList.add('off');
+            menu.style.top = '-200%';
+            menu.style.left = '-200%';
+        }
+
+		function Save(){
+			var xmlText=new XMLSerializer().serializeToString(reviews);
+			localStorage.setItem('xmlfile',xmlText);
+			console.log(reviews);
+			alert("Changes have been saved");
+		}
+		//-------------------------------------------------------------------------------------------------------------------------
+		
+	</script>
+	<style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+        html{
+            font-size: 16px;
+            font-family: sans-serif;
+            line-height: 1.5;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            box-sizing: border-box;
+        }
+        body{
+            padding: 1rem;
+        }
+        h1, h2, p, div{
+            padding: 1rem 2rem;
+        }
+        #s1{
+            border: 1px solid #999;
+        }
+        .menu{
+            width: 12rem;
+            height: auto;
+            background-color: #f4f4f4;
+            color: #333;
+            border: 1px solid #aaa;
+            box-shadow: 2px 2px 2px #999;
+            border-radius: 0.2rem;
+            list-style: none;
+            position: fixed;
+        }
+        .menu.off{
+            top: -200%;
+            left: -200%;
+        }
+        .menu-item{
+            height: 1.5rem;
+            line-height: 1.5rem;
+            font-size: 1rem;
+            font-weight: 100;
+            padding: 0 1rem;
+            cursor: pointer;
+        }
+        .menu-item:hover,
+        .menu-item:active{
+            color: #000;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+	<header style="background-color: cadetblue;">
+		<h1 style="text-align: center;">
+			Annotation Tool for Aspect-Based Sentiment Analysis
+		</h1>
+	</header>
+	<center>
+		<br />
+	<form action="pag1.html">
+		<input type="submit" value="Home" style="font-size: 16px;padding: 5px 8px"/>
+	</form>
+	<br>
+	<input id="fileInput" type="file" style="display:none;"/>
+	<input type="button" value="(1) Browse For The Comment File" onclick="document.getElementById('fileInput').click();" style="font-size: 16px;padding: 5px 8px"/>
+	<br />
+	<br />
+	<input type="button" value="(2) Load The Comments" onclick="xx()" style="font-size: 16px;padding: 5px 8px"/>
+	<br>
+	<br>
+	
+	<label for="s1">Comment: </label>
+	<div id="s1"></div>
+	<div id="c" style="font-size:small;">Comment 0 of 0</div>
+
+	<select name="comment" id="cNO" style="font-size: 16px;padding: 5px 8px">
+
+	</select>
+	<button style="font-size: 16px;padding: 5px 8px" onclick="Go()">Go To Comment</button>
+	<br>
+	<br>
+	<input type="button" value="Pxrevious" onclick="previous()" style="font-size: 16px;padding: 5px 8px"/>
+	<input type="button" value="Next" onclick="next()" style="font-size: 16px;padding: 5px 8px"/>
+	<input type="button" value="Save" onclick="Save()" style="font-size: 16px;padding: 5px 8px"/>
+	<br>    
+    <span id="s2"></span>
+    <ul class="menu" id="u">
+        
+    </ul>
+    <br>
+    <br>
+    <input type="text" value="MyFile.xml" placeholder="filename.xml" style="font-size: 16px;padding: 5px 8px">
+    <button onclick="downloadFile()" style="font-size: 16px;padding: 5px 8px">Create file</button> <output></output>
+      <!-- <ul>
+        <li>
+        <a href="http://www.html5rocks.com/en/tutorials/workers/basics/#toc-inlineworkers-bloburis" target="_blank"></a></li>
+			</ul> -->
+		</center>
+		<br/>		
+	  <footer style="background-color: darkkhaki;">
+		<h6 style="text-align: center;">
+			For any technical problem, please contact Ahmad Suleiman at amsulaiman165@cit.just.edu.jo
+		</h6>
+	  </footer>
+	<script>
+	var output = document.querySelector('output');
+
+	const MIME_TYPE = 'text/xml';
+
+	var cleanUp = function(a) {
+	  a.textContent = 'Downloaded';
+	  a.dataset.disabled = true;
+
+	  // Need a small delay for the revokeObjectURL to work properly.
+	  setTimeout(function() {
+	    window.URL.revokeObjectURL(a.href);
+	  }, 1500);
+	};
+
+	var downloadFile = function() {
+	  window.URL = window.webkitURL || window.URL;
+
+	  var prevLink = output.querySelector('a');
+	  if (prevLink) {
+	    window.URL.revokeObjectURL(prevLink.href);
+	    output.innerHTML = '';
+	  }
+	  //XMLDocument.toString
+	  var t=localStorage.getItem('xmlfile');
+	  var m="<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	  m+=t;
+	  m=m.split(">").join(">\n");
+	  m=m.replace("xmlns=\"http://www.w3.org/1999/xhtml\"","")
+	  console.log(m);
+	  var bb = new Blob([m], {type: MIME_TYPE});
+	  var a = document.createElement('a');
+	  a.download = document.querySelector('input[type="text"]').value;
+	  a.href = window.URL.createObjectURL(bb);
+	  a.textContent = 'Download ready';
+
+	  a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
+	  output.appendChild(a);
+
+	  a.onclick = function(e) {
+	    if ('disabled' in this.dataset) {
+	      return false;
+	    }
+	    cleanUp(this);
+	  };
+	};
+</script>
+</body>
+</html>
