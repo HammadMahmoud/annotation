@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reviews >
+<review rid="1">
+<sentences>
+<sentence id="1:0">
+<text>
+ The hotel is very clean, the rooms are spacious, and the food is very delicious.</text>
+<opinions>
+<opinion target="The hotel is very clean" category="Cleanness" polarity="positive" from="52" to="74">
+</opinion>
+<opinion target="the rooms are spacious" category="Room Spaciousness" polarity="positive" from="77" to="98">
+</opinion>
+<opinion target="and the food is very delicious" category="Food Quality" polarity="positive" from="100" to="130">
+</opinion>
+</opinions>
+</sentence>
+<sentence id="1:1">
+<text>
+ Unfortunately, the Internet connection was slow and the parking lot is small.</text>
+<opinions>
+<opinion target="Unfortunately, the Internet connection was slow and the parking lot is small" category="Internet Service&#13;" polarity="negative" from="133" to="208">
+</opinion>
+<opinion target="Unfortunately, the Internet connection was slow and the parking lot is small" category="Parking" polarity="negative" from="133" to="208">
+</opinion>
+</opinions>
+</sentence>
+</sentences>
+</review>
+</reviews>

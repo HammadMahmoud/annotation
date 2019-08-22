@@ -20,7 +20,6 @@
 		var index=0;
 		var index2=0;
 		var comments=new Array();
-
 		function Aspect(txt)
 		{
 			this.txt=txt;
@@ -39,7 +38,6 @@
 			this.sEnd=sEnd;
 			this.polarity=polarity;
 		}
-
 		var t=localStorage.getItem(0);
 		var asp=new Array();
 		for(var i=1;i<=t;i++)
@@ -53,12 +51,12 @@
 			for(var i=1;i<=t;i++){
 					var ul = document.getElementById("u");
 					li[i-1] = document.createElement("li");
+					li[i-1].style['text-align']= 'left';
 					poss[i-1]=document.createElement("button");
 					poss[i-1].id='+'+i;
 					poss[i-1].innerHTML='+'
 					poss[i-1].style['width']=20+'px';
-					poss[i-1].style['height']=20+'px';
-					
+					poss[i-1].style['height']=20+'px';					
 					li[i-1].appendChild(poss[i-1])
 					neg[i-1]=document.createElement("button");
 					neg[i-1].id='-'+i;
@@ -72,10 +70,9 @@
 					del[i-1].innerHTML='del';
 					del[i-1].style['width']='25px';
 					del[i-1].style['height']='20px';
-
 					li[i-1].appendChild(del[i-1]);
 					li[i-1].setAttribute('id'+i,asp[i-1].txt);
-					li[i-1].appendChild(document.createTextNode(asp[i-1].txt));
+					li[i-1].appendChild(document.createTextNode(asp[i-1].txt+'\t'));
 					li[i-1].style["height"]='1.5rem';
 					li[i-1].style["line-height"]='1.5rem';
 					li[i-1].style['font-size']='1rem';
@@ -344,9 +341,7 @@
 				reader.readAsText(text.files[0]);
 				
 		}
-
 		function next(){
-
 			index++;
 			if(index<lines.length){
 				arrayObj[index]=JSON.parse(lines[index]);
@@ -389,7 +384,6 @@
 				index--;
 			}
 		}
-
 		function previous()
 		{
 			index--;
@@ -489,9 +483,16 @@
             //stop the real right click menu
             ev.preventDefault(); 
             //show the custom menu
-            console.log( ev.clientX, ev.clientY );
+			var Xcor=screen.width/2;
+			var Ycor=screen.height/2;
+			if(ev.clientX>Xcor)
+			{
+				menu.style.top = `${ev.clientY - 20}px`;
+            	menu.style.left = `${ev.clientX - 250}px`;	
+			}
+			else {
             menu.style.top = `${ev.clientY - 20}px`;
-            menu.style.left = `${ev.clientX - 20}px`;
+            menu.style.left = `${ev.clientX - 20}px`;}
             menu.classList.remove('off');
         }
         
@@ -500,7 +501,6 @@
             menu.style.top = '-200%';
             menu.style.left = '-200%';
         }
-
 		function Save(){
 			var xmlText=new XMLSerializer().serializeToString(reviews);
 			localStorage.setItem('xmlfile',xmlText);
@@ -538,7 +538,7 @@
             border: 1px solid #999;
         }
         .menu{
-            width: 12rem;
+            width: auto;
             height: auto;
             background-color: #f4f4f4;
             color: #333;
@@ -546,7 +546,9 @@
             box-shadow: 2px 2px 2px #999;
             border-radius: 0.2rem;
             list-style: none;
-            position: fixed;
+            position:fixed;
+			
+				
         }
         .menu.off{
             top: -200%;
@@ -559,6 +561,8 @@
             font-weight: 100;
             padding: 0 1rem;
             cursor: pointer;
+			
+			
         }
         .menu-item:hover,
         .menu-item:active{
@@ -623,22 +627,17 @@
 	  </footer>
 	<script>
 	var output = document.querySelector('output');
-
 	const MIME_TYPE = 'text/xml';
-
 	var cleanUp = function(a) {
 	  a.textContent = 'Downloaded';
 	  a.dataset.disabled = true;
-
 	  // Need a small delay for the revokeObjectURL to work properly.
 	  setTimeout(function() {
 	    window.URL.revokeObjectURL(a.href);
 	  }, 1500);
 	};
-
 	var downloadFile = function() {
 	  window.URL = window.webkitURL || window.URL;
-
 	  var prevLink = output.querySelector('a');
 	  if (prevLink) {
 	    window.URL.revokeObjectURL(prevLink.href);
@@ -656,10 +655,8 @@
 	  a.download = document.querySelector('input[type="text"]').value;
 	  a.href = window.URL.createObjectURL(bb);
 	  a.textContent = 'Download ready';
-
 	  a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
 	  output.appendChild(a);
-
 	  a.onclick = function(e) {
 	    if ('disabled' in this.dataset) {
 	      return false;
